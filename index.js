@@ -1,5 +1,6 @@
 const express = require('express');
 const Userrouter = require("./routes/UserRoute");
+const Patientrouter = require("./routes/PatientRoute");
 const Recipientrouter = require("./routes/RecipientRoute");
 const adminRoutes = require("./routes/AdminRoute");
 const mongoose = require('mongoose');
@@ -11,8 +12,10 @@ app.listen(3030, ()=>{console.log("Started at 3030")});
 app.use(cors());
 app.use(express.json());
 app.use("/user", Userrouter);
+app.use("/patient", Patientrouter);
 app.use("/recipient", Recipientrouter);
 app.use("/admin", adminRoutes);
+
 mongoose.connect(process.env.MONGODB_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
