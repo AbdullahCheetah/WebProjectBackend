@@ -1,13 +1,14 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
-    Date :String,
-    Time:String,
-    DoctorID:String,
-    PatientID:String,
-    Status:String,// Completed,Incomplete,Cancelled,Resheduled
-    Type:String,//Appointment type normal or emegency
-    Fees:Number
-},{timestamps:true})
-const model = mongoose.model("Appointment" , userSchema);
-module.exports = model;
+const appointmentSchema = mongoose.Schema({
+  Date: String,
+  Time: String,
+  DoctorID: String,
+  PatientID: String,
+  Status: String, // Completed, Incomplete, Cancelled, Rescheduled
+  Type: String, // Appointment type: Normal or Emergency
+  Fees: Number,
+}, { timestamps: true });
+
+const Appointment = mongoose.model('Appointment', appointmentSchema);
+module.exports = Appointment;

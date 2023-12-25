@@ -3,6 +3,7 @@ const Userrouter = require("./routes/UserRoute");
 const Patientrouter = require("./routes/PatientRoute");
 const Recipientrouter = require("./routes/RecipientRoute");
 const adminRoutes = require("./routes/AdminRoute");
+const doctorRoutes = require("./routes/DoctorRoute");
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -15,7 +16,7 @@ app.use("/user", Userrouter);
 app.use("/patient", Patientrouter);
 app.use("/recipient", Recipientrouter);
 app.use("/admin", adminRoutes);
-
+app.use('/doctor', doctorRoutes);
 mongoose.connect(process.env.MONGODB_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
