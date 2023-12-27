@@ -1,8 +1,9 @@
 const user = require('../model/User.schema');
+const Appointment = require('../model/Appointment.schema');
 
 const addDoctor = async (req, res) => {
   try {
-    const { name, email, password, role, availableDays, availableTimeStart, availableTimeEnd } = req.body;
+  const { name, email, password, role,specialist, availableDays, availableTimeStart, availableTimeEnd, Fees } = req.body;
     const existingDoctor = await user.findOne({ email });
 
     if (existingDoctor) {
@@ -14,9 +15,11 @@ const addDoctor = async (req, res) => {
       email,
       password,
       role,
+      specialist,
       availableDays,
       availableTimeStart,
       availableTimeEnd,
+      Fees,
     });
 
     res.status(201).json(createdDoctor);
@@ -28,16 +31,18 @@ const addDoctor = async (req, res) => {
 
 const updateDoctor = async (req, res) => {
   const doctorId = req.params.id;
-  const { name, email, password, role, availableDays, availableTimeStart, availableTimeEnd } = req.body;
+  const { name, email, password, role,specialist, availableDays, availableTimeStart, availableTimeEnd , Fees } = req.body;
   try {
     const updatedDoctor = await user.findByIdAndUpdate(doctorId, {
       name,
       email,
       password,
       role,
+      specialist,
       availableDays,
       availableTimeStart,
       availableTimeEnd,
+      Fees,
     }, { new: true });
 
     if (!updatedDoctor) {
@@ -79,4 +84,84 @@ const getAllDoctor = async (req, res) => {
   }
 };
 
-module.exports = { addDoctor, updateDoctor, deleteDoctor, getAllDoctor };
+const getAllAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find();
+    res.status(200).json(appointments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const updateAppointmentStatus = async (req, res) => {
+  const appointmentId = req.params.id;
+
+  try {
+    const updatedAppointment = await Appointment.findByIdAndUpdate(appointmentId, {
+      ApproveStatus: true,
+    }, { new: true });
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const deleteAppointmentById = async (req, res) => {
+  const appointmentId = req.params.id;
+
+  try {
+    const deletedAppointment = await Appointment.findByIdAndDelete(appointmentId);
+
+    if (!deletedAppointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    res.status(200).json({ message: 'Appointment deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+const updateAppointmentById = async (req, res) => {
+  const appointmentId = req.params.id;
+
+  try {
+    const { newDate, newTime} = req.body;
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      {
+        Date: newDate,
+        Time: newTime,
+      },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { 
+  addDoctor, 
+  updateDoctor, 
+  deleteDoctor, 
+  getAllDoctor, 
+  getAllAppointments, 
+  updateAppointmentStatus, 
+  deleteAppointmentById,
+  updateAppointmentById,
+};
